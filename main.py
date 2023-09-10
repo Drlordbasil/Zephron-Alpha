@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 from transformers import pipeline
 
+
 class SearchEngine:
     def query(self, query):
         search_query = f"https://www.google.com/search?q={query}"
@@ -10,6 +11,7 @@ class SearchEngine:
             return response.text
         else:
             return ""
+
 
 class ContentCuration:
     def __init__(self):
@@ -29,8 +31,10 @@ class ContentCuration:
 
     def analyze_content(self, content):
         sentiment_analysis = self.sentiment_classifier(content)
-        topic_classification = self.topic_classifier(content, candidate_labels=["technology", "sports", "politics"])
-        summarized_content = self.summarizer(content, max_length=100, min_length=30, do_sample=False)
+        topic_classification = self.topic_classifier(
+            content, candidate_labels=["technology", "sports", "politics"])
+        summarized_content = self.summarizer(
+            content, max_length=100, min_length=30, do_sample=False)
 
         return sentiment_analysis, topic_classification, summarized_content
 
@@ -39,16 +43,16 @@ class ContentCuration:
 
         for profile in self.user_profiles.values():
             profile_interests = profile['interests']
-            
+
             if sentiment in profile_interests and topic in profile_interests:
                 recommendations.append(summary)
-            
+
             elif topic == 'technology' and 'technology' in profile_interests:
                 recommendations.append(summary)
-            
+
             elif topic == 'sports' and 'sports' in profile_interests:
                 recommendations.append(summary)
-            
+
             elif topic == 'politics' and 'politics' in profile_interests:
                 recommendations.append(summary)
 
@@ -66,7 +70,8 @@ class ContentCuration:
             if response.status_code == 200:
                 content = response.text
                 sentiment, topic, summary = self.analyze_content(content)
-                recommendations = self.generate_recommendations(sentiment, topic, summary)
+                recommendations = self.generate_recommendations(
+                    sentiment, topic, summary)
                 # Store recommendations in the user profiles or any other desired output
 
 
