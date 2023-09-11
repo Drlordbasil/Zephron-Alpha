@@ -1,16 +1,15 @@
-import requests
-from bs4 import BeautifulSoup
 from transformers import pipeline
+from bs4 import BeautifulSoup
+import requests
+Optimized Python script:
 
 
 class SearchEngine:
-    def query(self, query):
+    @staticmethod
+    def query(query):
         search_query = f"https://www.google.com/search?q={query}"
         response = requests.get(search_query)
-        if response.status_code == 200:
-            return response.text
-        else:
-            return ""
+        return response.text if response.status_code == 200 else ""
 
 
 class ContentCuration:
@@ -24,10 +23,8 @@ class ContentCuration:
     def extract_urls(self, html_content):
         soup = BeautifulSoup(html_content, 'html.parser')
         search_results = soup.find_all('div', class_='r')
-
-        for result in search_results:
-            link = result.find('a')['href']
-            self.content_urls.append(link)
+        self.content_urls = [result.find('a')['href']
+                             for result in search_results]
 
     def analyze_content(self, content):
         sentiment_analysis = self.sentiment_classifier(content)
@@ -46,23 +43,13 @@ class ContentCuration:
 
             if sentiment in profile_interests and topic in profile_interests:
                 recommendations.append(summary)
-
-            elif topic == 'technology' and 'technology' in profile_interests:
-                recommendations.append(summary)
-
-            elif topic == 'sports' and 'sports' in profile_interests:
-                recommendations.append(summary)
-
-            elif topic == 'politics' and 'politics' in profile_interests:
+            elif topic in profile_interests or (topic == 'technology' and 'technology' in profile_interests):
                 recommendations.append(summary)
 
         return recommendations
 
     def update_user_profiles(self, user_id, interests):
-        if user_id in self.user_profiles:
-            self.user_profiles[user_id]['interests'] = interests
-        else:
-            self.user_profiles[user_id] = {'interests': interests}
+        self.user_profiles[user_id] = {'interests': interests}
 
     def fetch_content(self):
         for url in self.content_urls:
@@ -72,6 +59,7 @@ class ContentCuration:
                 sentiment, topic, summary = self.analyze_content(content)
                 recommendations = self.generate_recommendations(
                     sentiment, topic, summary)
+
                 # Store recommendations in the user profiles or any other desired output
 
 
